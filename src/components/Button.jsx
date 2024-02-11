@@ -5,7 +5,7 @@ import mqtt from 'mqtt';
 const clientId = "emqx_react_" + Math.random().toString(16).substring(2, 8);
 const username = "emqx";
 const password = "public";
-const client = mqtt.connect("ws://broker.emqx.io:8083/mqtt", {
+const client = mqtt.connect("wss://broker.emqx.io:8084/mqtt", {
     clientId,
     username,
     password,
