@@ -1,5 +1,4 @@
-'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import mqtt from 'mqtt';
 
 const clientId = "emqx_react_" + Math.random().toString(16).substring(2, 8);
@@ -42,6 +41,13 @@ const Button = () => {
 
     client.on("message", (topic, message) => {
         console.log(`received message: ${message} from topic: ${topic}`);
+        if (message == "on") {
+            if (typeof window != undefined) {
+                btn.checked = true;
+            }
+        } else if (message == "off") {
+            btn.checked = false;
+        }
     });
 
     useEffect(() => {
@@ -58,22 +64,37 @@ const Button = () => {
             }
         };
     }, []);
-    const handleChange = (e)=>{
-        if(e.target.checked){
+
+    const fetchStatus = async () => {
+        const response = await fetch('/api/getstatus');
+        const json = await response.json();
+        if (json.success) {
+            if (typeof window !== 'undefined') {
+                btn.checked = json.status === 'on' ? true : false;
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchStatus();
+    }, []);
+
+    const handleChange = (e) => {
+        if (e.target.checked) {
             mqttPublish('on')
-        }else{
+        } else {
             mqttPublish('off')
         }
     }
     return (
         <>
-            <div class="toggle">
+            <div className="toggle">
                 <input type="checkbox" onChange={handleChange} id="btn" />
-                <label for="btn">
-                    <span class="track">
-                        <span class="txt"></span>
+                <label htmlFor="btn">
+                    <span className="track">
+                        <span className="txt"></span>
                     </span>
-                    <span class="thumb">|||</span>
+                    <span className="thumb">|||</span>
                 </label>
             </div>
         </>
