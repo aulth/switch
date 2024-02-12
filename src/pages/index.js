@@ -1,9 +1,15 @@
 import Button from "@/components/Button";
+import Head from "next/head";
 export default function Home() {
 
   return (
-    <div className="p-4">
-      <Button />
-    </div>
+    <>
+      <Head>
+        <title>InhaleSafe Switch</title>
+      </Head>
+      <div className="p-4">
+        <Button />
+      </div>
+    </>
   );
 }

@@ -39,16 +39,19 @@ const page = async (req, res) => {
         if (error) {
             console.log('subscribe error:', error)
             return
+        } else {
+            console.log(`Subscribe to topic '${topic}'`)
+            client.publish(topic, payload, { qos, retain }, (error) => {
+                if (error) {
+                    console.error(error)
+                    return res.status(500).json({ success: false, msg: error });
+                } else {
+                    return res.status(200).json({ success: true, msg: `Turned ${data.status}` })
+                }
+            })
         }
-        console.log(`Subscribe to topic '${topic}'`)
     })
-    client.publish(topic, payload, { qos, retain }, (error) => {
-        if (error) {
-            console.error(error)
-            return res.status(500).json({ success: false, msg: error });
-        }
-    })
-    return res.status(200).json({ success: true, msg: `Turned ${data.status}` })
+
 }
 
 export default page;
