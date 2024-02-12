@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import mqtt from 'mqtt';
 
 const clientId = "emqx_react_" + Math.random().toString(16).substring(2, 8);
@@ -31,7 +31,8 @@ const Button = () => {
             const topic = 'inhalesafe';
             const qos = 0;
             const payload = message;
-            client.publish(topic, payload, { qos }, (error) => {
+            const retain = true;
+            client.publish(topic, payload, { qos, retain }, (error) => {
                 if (error) {
                     console.log("Publish error: ", error);
                 }
@@ -63,20 +64,6 @@ const Button = () => {
                 });
             }
         };
-    }, []);
-
-    const fetchStatus = async () => {
-        const response = await fetch('/api/getstatus');
-        const json = await response.json();
-        if (json.success) {
-            if (typeof window !== 'undefined') {
-                btn.checked = json.status === 'on' ? true : false;
-            }
-        }
-    }
-
-    useEffect(() => {
-        fetchStatus();
     }, []);
 
     const handleChange = (e) => {
